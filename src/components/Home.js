@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CartState } from "../context/Context";
 import SingleProduct from "./SingleProduct";
 import "./styles.css";
@@ -11,37 +11,47 @@ const Home = () => {
     productState: { sort, byStock, byFastDelivery, byRating, searchQuery },
   } = CartState();
 
+  const [displayedProducts, setDisplayedProducts] = useState();
+
   const transformProducts = () => {
-    let sortedProducts = products;
+    if (products) {
+      let sortedProducts = products;
 
-    if (sort) {
-      sortedProducts = sortedProducts.sort((a, b) =>
-        sort === "lowToHigh" ? a.price - b.price : b.price - a.price
-      );
+      if (sort) {
+        sortedProducts = sortedProducts.sort((a, b) =>
+          sort === "lowToHigh" ? a.price - b.price : b.price - a.price
+        );
+      }
+
+      if (!byStock) {
+        sortedProducts = sortedProducts.filter((product) => product.inStock);
+      }
+
+      if (byFastDelivery) {
+        sortedProducts = sortedProducts.filter(
+          (product) => product.fastDelivery
+        );
+      }
+
+      if (byRating) {
+        sortedProducts = sortedProducts.filter(
+          (product) => product.ratings >= byRating
+        );
+      }
+
+      if (searchQuery) {
+        sortedProducts = sortedProducts.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      return sortedProducts;
     }
-
-    if (!byStock) {
-      sortedProducts = sortedProducts.filter((product) => product.inStock);
-    }
-
-    if (byFastDelivery) {
-      sortedProducts = sortedProducts.filter((product) => product.fastDelivery);
-    }
-
-    if (byRating) {
-      sortedProducts = sortedProducts.filter(
-        (product) => product.ratings >= byRating
-      );
-    }
-
-    if (searchQuery) {
-      sortedProducts = sortedProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    return sortedProducts;
   };
+
+  useEffect(() => {
+    setDisplayedProducts(transformProducts());
+  }, [byRating, byFastDelivery, byStock, searchQuery, sort]);
 
   return (
     <Container>
@@ -51,7 +61,7 @@ const Home = () => {
         </Col>
         <Col xs={12} lg={9}>
           <Row xs={2} sm={3}>
-            {transformProducts().map((product) => {
+            {displayedProducts?.map((product) => {
               return <SingleProduct product={product} key={product.id} />;
             })}
           </Row>

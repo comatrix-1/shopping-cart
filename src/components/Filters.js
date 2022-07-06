@@ -8,7 +8,13 @@ const Filters = () => {
     productDispatch,
   } = CartState();
 
-  console.log(byStock, byFastDelivery, sort, byRating);
+  console.log(
+    "Filters component reloaded",
+    byStock,
+    byFastDelivery,
+    sort,
+    byRating
+  );
 
   return (
     <div className="filters mt-2">

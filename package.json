@@ -1,7 +1,7 @@
 {
   "name": "shopping-cart",
   "version": "0.1.0",
-  "homepage": "https://comatrix-1.github.io/shopping-cart",
+  "homepage": "https://comatrix-1.github.io",
   "private": true,
   "dependencies": {
     "@faker-js/faker": "^7.3.0",
